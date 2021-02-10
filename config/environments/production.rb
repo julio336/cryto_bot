@@ -84,8 +84,6 @@ Rails.application.configure do
       enable_starttls_auto: true
   }
 
-  config.action_mailer.default_url_options = {:host => "desolate-beach-60096.herokuapp.com"}
-
   config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners.
