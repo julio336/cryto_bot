@@ -6,10 +6,12 @@ namespace :scheduled_tasks do
     
     puts "done."
   end
-desc "Check if can update more..?"
-  task poll: :environment do
-    puts "Number of Things not yet completed is"
-    
-    puts "done."
+  desc "Check if can update more..?"
+    task poll: :environment do
+      puts "Number of Things not yet completed is"
+  end
+  task :mailme => :environment do
+    ApplicationMailer.test_email.deliver
   end
 end
+
