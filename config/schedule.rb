@@ -18,6 +18,6 @@
 set :output, "log/cron.log"
 
 every 1.minute do
-	rake 'sample:test'
+	rake 'scheduled_tasks:mailme'
 end
 # Learn more: http://github.com/javan/whenever
