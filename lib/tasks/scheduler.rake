@@ -20,7 +20,7 @@ namespace :scheduled_tasks do
       url = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=15m"
       resp = Net::HTTP.get_response(URI.parse(url))
       data = JSON.parse(resp.body)
-      if data['value'] <= 55
+      if data['value'] <= 35 || data['value'] > 70
         puts "Email enviado"
         subject = "#{pair}: #{data['value']}"
         puts subject
