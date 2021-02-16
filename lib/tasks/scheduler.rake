@@ -21,15 +21,17 @@ namespace :scheduled_tasks do
       resp = Net::HTTP.get_response(URI.parse(url))
       data = JSON.parse(resp.body)
       puts data
-      if data['value'] <= 35 || data['value'] > 70
+      if data['value'] <= 55 || data['value'] > 70
         crypto_arr.store(pair, data['value'])
         puts crypto_arr
       else
         puts data
       end
     end
-    puts "Email enviado"
-    ApplicationMailer.test_email(crypto_arr).deliver
+    if !crypto_arr.empty?
+      puts "Email enviado"
+      ApplicationMailer.test_email(crypto_arr).deliver
+    end
   end
 end
 
