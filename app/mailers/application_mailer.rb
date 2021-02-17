@@ -11,15 +11,15 @@ class ApplicationMailer < ActionMailer::Base
 		end			
     end
 
- 	def senal_venta()
+ 	def senal_venta(pair)
     	to = "julio336@hotmail.com"
-    	mail(:to => to, :subject => "Señal VENTA", :from => "CRYPTO BOT") do |format|
+    	mail(:to => to, :subject => "Señal VENTA #{pair}", :from => "CRYPTO BOT") do |format|
     		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
 		end			
     end
-    def senal_compra()
+    def senal_compra(pair)
     	to = "julio336@hotmail.com"
-    	mail(:to => to, :subject => "Señal COMPRA", :from => "CRYPTO BOT") do |format|
+    	mail(:to => to, :subject => "Señal COMPRA #{pair}", :from => "CRYPTO BOT") do |format|
     		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
 		end			
     end
