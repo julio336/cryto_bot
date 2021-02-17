@@ -25,15 +25,16 @@ namespace :scheduled_tasks do
       data_macd = JSON.parse(resp_macd.body)
       puts data_macd
       venta = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
-      if data_macd['valueMACDSignal'] > data_macd['valueMACD'] and (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs > 0.9
+      if data_macd['valueMACDSignal'] > data_macd['valueMACD'] and venta > 0.9
         puts pair
         puts "Señal de venta"
-        ApplicationMailer.senal_venta(pair).deliver
+        ApplicationMailer.senal_venta(pair, data_macd, venta).deliver
       end
-      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and (data_macd['valueMACDSignal']/data_macd['valueMACD']).abs > 0.9
+      compra = (data_macd['valueMACDSignal']/data_macd['valueMACD']).abs
+      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and compra > 0.9
         puts pair
         puts "Señal de compra"
-        ApplicationMailer.senal_compra(pair).deliver
+        ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
       end
       puts data_rsi
       if data_rsi['value'] <= 35 || data_rsi['value'] > 70
