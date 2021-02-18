@@ -23,7 +23,6 @@ namespace :scheduled_tasks do
       resp_macd = Net::HTTP.get_response(URI.parse(url_macd))
       data_rsi = JSON.parse(resp_rsi.body)
       data_macd = JSON.parse(resp_macd.body)
-      puts data_macd
       venta = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
       if data_macd['valueMACDSignal'] > data_macd['valueMACD'] and venta > 0.9
         puts pair
@@ -31,7 +30,7 @@ namespace :scheduled_tasks do
         ApplicationMailer.senal_venta(pair, data_macd, venta).deliver
       end
       compra = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
-      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and compra > 0.85
+      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and (compra < 1 && compra >0.85)
         puts pair
         puts "Señal de compra"
         ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
