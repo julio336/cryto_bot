@@ -19,18 +19,19 @@ namespace :scheduled_tasks do
     crypto_pair.each do |crypto, pair|
       url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
       resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
-      url_macd = "https://api.taapi.io/macd?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
+      url_macd = "https://api.taapi.io/macd?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=4h"
       resp_macd = Net::HTTP.get_response(URI.parse(url_macd))
       data_rsi = JSON.parse(resp_rsi.body)
       data_macd = JSON.parse(resp_macd.body)
+      puts data_macd
       venta = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
-      if data_macd['valueMACDSignal'] > data_macd['valueMACD'] and venta > 0.9
+      if data_macd['valueMACDSignal'] > data_macd['valueMACD'] and (venta > 0.9 && venta < 1)
         puts pair
         puts "Señal de venta"
         ApplicationMailer.senal_venta(pair, data_macd, venta).deliver
       end
       compra = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
-      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and (compra < 1 && compra >0.85)
+      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and (compra < 1 && compra >0.9)
         puts pair
         puts "Señal de compra"
         ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
