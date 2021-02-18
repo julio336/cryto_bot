@@ -30,8 +30,8 @@ namespace :scheduled_tasks do
         puts "Señal de venta"
         ApplicationMailer.senal_venta(pair, data_macd, venta).deliver
       end
-      compra = (data_macd['valueMACDSignal']/data_macd['valueMACD']).abs
-      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and compra > 0.9
+      compra = (data_macd['valueMACD']/data_macd['valueMACDSignal']).abs
+      if data_macd['valueMACD'] > data_macd['valueMACDSignal'] and compra > 0.85
         puts pair
         puts "Señal de compra"
         ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
