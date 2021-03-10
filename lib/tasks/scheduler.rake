@@ -17,9 +17,12 @@ namespace :scheduled_tasks do
     #crypto_pair = {"btc" => "BTC/USDT"}
     crypto_arr = Hash.new
     crypto_pair.each do |crypto, pair|
-      url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
-      resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
-      data_rsi = JSON.parse(resp_rsi.body)
+    #url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
+    #resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
+    #data_rsi = JSON.parse(resp_rsi.body)
+      url_st = "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
+      resp_st = Net::HTTP.get_response(URI.parse(url_st))
+      data_st = JSON.parse(resp_st.body)
 =begin
       url_macd = "https://api.taapi.io/macd?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=4h"
       resp_macd = Net::HTTP.get_response(URI.parse(url_macd))
@@ -40,18 +43,26 @@ namespace :scheduled_tasks do
           ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
         end
 =end
-      puts data_rsi
+      #puts data_rsi
+      crypto_arr.store(pair, data_st)
+      puts crypto_arr
+      ApplicationMailer.test_email(crypto_arr).deliver
+
+=begin
       if data_rsi['value'] <= 30 || data_rsi['value'] > 70
         crypto_arr.store(pair, data_rsi['value'])
         puts crypto_arr
       else
         puts data_rsi
       end
+=end
     end
+=begin
     if !crypto_arr.empty?
       puts "Email enviado"
       ApplicationMailer.test_email(crypto_arr).deliver
     end
+=end
   end
 end
 
