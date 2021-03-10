@@ -46,8 +46,7 @@ namespace :scheduled_tasks do
       #puts data_rsi
       crypto_arr.store(pair, data_st)
       puts crypto_arr
-      ApplicationMailer.test_email(crypto_arr).deliver
-
+      
 =begin
       if data_rsi['value'] <= 30 || data_rsi['value'] > 70
         crypto_arr.store(pair, data_rsi['value'])
@@ -57,6 +56,8 @@ namespace :scheduled_tasks do
       end
 =end
     end
+    ApplicationMailer.test_email(crypto_arr).deliver
+
 =begin
     if !crypto_arr.empty?
       puts "Email enviado"
