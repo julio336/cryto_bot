@@ -13,7 +13,7 @@ namespace :scheduled_tasks do
       puts "Number of Things not yet completed is"
   end
   task :mailme => :environment do
-    crypto_pair = {"btc" => "BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
+    crypto_pair = {"xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
     crypto_arr = Hash.new
     price_arr = Hash.new
     crypto_pair.each do |crypto, pair|
