@@ -37,7 +37,10 @@ namespace :scheduled_tasks do
         price_arr.store(pair, data_price)
       end
     end
-   #ApplicationMailer.test_email(crypto_arr, price_arr).deliver
+    puts crypto_arr
+    if crypto_arr.nil?
+      ApplicationMailer.test_email(crypto_arr, price_arr).deliver
+    end
   end
 end
 

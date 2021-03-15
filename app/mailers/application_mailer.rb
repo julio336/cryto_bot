@@ -4,7 +4,7 @@ class ApplicationMailer < ActionMailer::Base
   layout 'mailer'
 
 	def test_email(arr, price)
-    	to = "julio336@hotmail.com"
+    	to = "julio.ahuactzin@gmail.com"
     	@arr_crypto = arr
     	@price = price
     	mail(:to => to, :subject => "Señal COMPRA/VENTA", :from => "CRYPTO BOT") do |format|
