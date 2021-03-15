@@ -14,6 +14,7 @@ namespace :scheduled_tasks do
   end
   task :mailme => :environment do
     crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
+    #crypto_pair = {"btc"=>"BTC/USDT"}
     crypto_arr = Hash.new
     price_arr = Hash.new
     crypto_pair.each do |crypto, pair|
@@ -38,7 +39,7 @@ namespace :scheduled_tasks do
       end
     end
     puts crypto_arr
-    if !crypto_arr.nil?
+    if !crypto_arr.empty?
       puts "Email enviado"
       ApplicationMailer.test_email(crypto_arr, price_arr).deliver
     end
