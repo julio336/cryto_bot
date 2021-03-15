@@ -14,7 +14,6 @@ namespace :scheduled_tasks do
   end
   task :mailme => :environment do
     crypto_pair = {"btc" => "BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
-    #crypto_pair = {"btc" => "BTC/USDT"}
     crypto_arr = Hash.new
     price_arr = Hash.new
     crypto_pair.each do |crypto, pair|
@@ -48,10 +47,15 @@ namespace :scheduled_tasks do
           ApplicationMailer.senal_compra(pair, data_macd, compra).deliver
         end
 =end
-      #puts data_rsi
-      crypto_arr.store(pair, data_st)
-      price_arr.store(pair, data_price)
-      
+      puts data_st
+      puts data_price
+      evaluation = (data_st['value']-data_price['value']).abs
+      puts evaluation
+      if evaluation < 1
+        crypto_arr.store(pair, data_st)
+        price_arr.store(pair, data_price)
+      end
+       
 =begin
       if data_rsi['value'] <= 30 || data_rsi['value'] > 70
         crypto_arr.store(pair, data_rsi['value'])
@@ -61,14 +65,7 @@ namespace :scheduled_tasks do
       end
 =end
     end
-    ApplicationMailer.test_email(crypto_arr, price_arr).deliver
-
-=begin
-    if !crypto_arr.empty?
-      puts "Email enviado"
-      ApplicationMailer.test_email(crypto_arr).deliver
-    end
-=end
+   ApplicationMailer.test_email(crypto_arr, price_arr).deliver
   end
 end
 
