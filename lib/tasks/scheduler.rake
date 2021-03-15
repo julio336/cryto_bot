@@ -39,6 +39,7 @@ namespace :scheduled_tasks do
     end
     puts crypto_arr
     if !crypto_arr.nil?
+      puts "Email enviado"
       ApplicationMailer.test_email(crypto_arr, price_arr).deliver
     end
   end
