@@ -29,7 +29,7 @@ namespace :scheduled_tasks do
       data_price = JSON.parse(resp_price.body)
       puts data_st
       puts data_price
-      evaluation = (data_price['value']/data_st['value']).abs
+      evaluation = (data_price['value']/data_st['value'])
       puts evaluation
       porcent = (evaluation-1)*100
       puts porcent
