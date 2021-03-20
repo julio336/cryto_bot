@@ -33,7 +33,7 @@ namespace :scheduled_tasks do
       puts evaluation
       porcent = ((1-evaluation).abs)*100
       puts porcent
-      if porcent < 3
+      if porcent < 2
         crypto_arr.store(pair, data_st)
         price_arr.store(pair, data_price)
       end
