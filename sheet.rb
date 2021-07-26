@@ -12,15 +12,7 @@ crypto_pair.each do |crypto, pair|
     data_candle = JSON.parse(resp_candle.body)
     #puts data_candle
     data_candle.each do |i,hash|
-		#puts i
-		count = 0
-		if count == 0
-			crypto_arr << hash
-		else
-			crypto_arr << hash.to_i
-		end
-		#puts hash
-		count += 1
+		crypto_arr << hash
 	end
     puts crypto_arr
 end
