@@ -1,9 +1,6 @@
 require 'bundler'
-require "google_drive"
 require "net/http"
-require 'google/api_client'
-require 'google/api_client/client_secrets'
-require 'google/api_client/auth/file_storage'
+require "google/api_client/client_secrets"
 
 Bundler.require
 
@@ -22,7 +19,7 @@ crypto_pair.each do |crypto, pair|
     puts crypto_arr
 end
 
-session = GoogleDrive::Session.from_service_account_key("client_secret.json")
+session = GoogleDrive::Session.from_service_account_key("client_secrets.json")
 
 spreadsheet = session.spreadsheet_by_title("Binance")
 worksheet = spreadsheet.worksheets.first
