@@ -19,7 +19,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'whenever', require: false
 #gem 'concurrent-ruby', '~> 1.1.8'
 gem 'dotenv-rails', groups: [:development, :test]
-
+gem 'google_drive'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
