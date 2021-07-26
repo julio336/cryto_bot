@@ -20,6 +20,7 @@ crypto_pair.each do |crypto, pair|
 			crypto_arr << hash.to_i
 		end
 		#puts hash
+		count += 1
 	end
     puts crypto_arr
 end
