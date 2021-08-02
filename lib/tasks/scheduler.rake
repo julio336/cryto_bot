@@ -76,6 +76,15 @@ namespace :scheduled_tasks do
     puts volume_from_sheet
     puts volume
 
+    if volume >= volume_from_sheet
+      ApplicationMailer.volume_analyse(volume_from_sheet, crypto_arr, volume).deliver
+    end
+
+    if candle_high >= high_from_sheet
+      puts "send email"
+      ApplicationMailer.long_analyse(volume_from_sheet, crypto_arr, volume).deliver
+    end 
+
     if candle_high >= high_from_sheet
       puts "send email"
       ApplicationMailer.long_analyse(volume_from_sheet, crypto_arr, volume).deliver
