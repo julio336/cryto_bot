@@ -33,6 +33,14 @@ namespace :scheduled_tasks do
         if i == "open"
           candle_open = hash.to_f
         end
+
+        if i == "high"
+          candle_high = hash.to_f
+        end
+
+        if i = "low"
+          candle_low = hash.to_f
+        end
           
         if i == "close"
           candle_close = hash.to_f
@@ -62,13 +70,20 @@ namespace :scheduled_tasks do
     ])
 
     volume_from_sheet = worksheet["I2"].to_f
+    high_from_sheet = worksheet["I5"].to_f
+    low_from_sheet = worksheet["I8"].to_f
 
     puts volume_from_sheet
     puts volume
 
-    if volume >= volume_from_sheet
+    if candle_high >= high_from_sheet
       puts "send email"
-      ApplicationMailer.volume_analyse(volume_from_sheet, crypto_arr, volume).deliver
+      ApplicationMailer.long_analyse(volume_from_sheet, crypto_arr, volume).deliver
+    end 
+
+    if candle_low <= low_from_sheet
+      puts "send email"
+      ApplicationMailer.short_analyse(volume_from_sheet, crypto_arr, volume).deliver
     end 
 
     worksheet.save
