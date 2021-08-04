@@ -22,6 +22,8 @@ namespace :scheduled_tasks do
     crypto_arr = Array.new
     candle_open = 0
     candle_close = 0
+    candle_high = 0
+    candle_low = 0
     volume = 0
 
     crypto_pair.each do |crypto, pair|
@@ -79,11 +81,6 @@ namespace :scheduled_tasks do
     if volume >= volume_from_sheet
       ApplicationMailer.volume_analyse(volume_from_sheet, crypto_arr, volume).deliver
     end
-
-    if candle_high >= high_from_sheet
-      puts "send email"
-      ApplicationMailer.long_analyse(volume_from_sheet, crypto_arr, volume).deliver
-    end 
 
     if candle_high >= high_from_sheet
       puts "send email"
