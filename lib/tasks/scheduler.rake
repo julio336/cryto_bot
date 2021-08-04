@@ -79,6 +79,7 @@ namespace :scheduled_tasks do
     puts volume
 
     if volume >= volume_from_sheet
+      puts "Volumen mayor"
       ApplicationMailer.volume_analyse(volume_from_sheet, crypto_arr, volume).deliver
     end
 
