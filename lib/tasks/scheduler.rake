@@ -40,7 +40,7 @@ namespace :scheduled_tasks do
           candle_high = hash.to_f
         end
 
-        if i = "low"
+        if i == "low"
           candle_low = hash.to_f
         end
           
