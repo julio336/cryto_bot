@@ -23,6 +23,15 @@ class ApplicationMailer < ActionMailer::Base
         end         
     end
 
+    def supertrend_analyse(arr)
+        to = "julio.ahuactzin@gmail.com"
+        @arr_crypto = arr
+        mail(:to => to, :subject => "Señal Super Trend", :from => "CRYPTO BOT") do |format|
+            format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
+        end         
+    end
+
+
 
     def long_analyse(volume_from_sheet, arr, volume)
         to = "julio.ahuactzin@gmail.com"

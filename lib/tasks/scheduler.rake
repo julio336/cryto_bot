@@ -16,6 +16,53 @@ namespace :scheduled_tasks do
       puts "Number of Things not yet completed is"
   end
 
+
+  task :supertrendmail => :environment do
+    
+    crypto_pair = {"btc"=>"BTC/USDT"}
+    crypto_arr = Array.new
+    valueAdvice = ""
+
+    crypto_pair.each do |crypto, pair|
+      url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
+      resp_st = Net::HTTP.get_response(URI.parse(url_st))
+      data_st = JSON.parse(resp_st.body)
+
+      data_st.each do |i,hash|
+        if i == "valueAdvice"
+          valueAdvice =  hash
+        end 
+
+        crypto_arr << hash
+        puts hash
+      
+      end
+      
+    end
+
+    puts crypto_arr
+
+    session = GoogleDrive::Session.from_service_account_key("client_secrets.json")
+
+
+    spreadsheet = session.spreadsheet_by_title("Binance")
+    worksheet = spreadsheet.worksheets.last
+    advice_from_sheet = worksheet["B3"]
+    puts advice_from_sheet
+
+    if advice_from_sheet != valueAdvice
+      puts "enviar correo"
+      ApplicationMailer.supertrend_analyse(crypto_arr).deliver
+    end
+
+    worksheet.insert_rows(3,
+    [
+      crypto_arr
+    ])
+
+    worksheet.save
+  end
+
   task :mailbinance => :environment do
     
     crypto_pair = {"btc"=>"BTC/USDT"}
@@ -27,6 +74,7 @@ namespace :scheduled_tasks do
     volume = 0
 
     crypto_pair.each do |crypto, pair|
+
       url_candle = "https://api.taapi.io/candle?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=15m"
       resp_candle = Net::HTTP.get_response(URI.parse(url_candle))
       data_candle = JSON.parse(resp_candle.body)
