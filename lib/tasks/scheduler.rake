@@ -50,19 +50,19 @@ namespace :scheduled_tasks do
     advice_from_sheet = worksheet["B3"]
     puts advice_from_sheet
 
-    if advice_from_sheet == "long" || advice_from_sheet == "short"
+    if valueAdvice == "long" || valueAdvice == "short"
       if advice_from_sheet != valueAdvice
         puts "enviar correo"
         ApplicationMailer.supertrend_analyse(crypto_arr).deliver
       end
+      
+      worksheet.insert_rows(3,
+      [
+        crypto_arr
+      ])
+
+      worksheet.save
     end
-
-    worksheet.insert_rows(3,
-    [
-      crypto_arr
-    ])
-
-    worksheet.save
   end
 
   task :mailbinance => :environment do
