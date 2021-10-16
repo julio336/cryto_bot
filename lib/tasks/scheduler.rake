@@ -48,6 +48,7 @@ namespace :scheduled_tasks do
     spreadsheet = session.spreadsheet_by_title("Binance")
     worksheet = spreadsheet.worksheets.last
     advice_from_sheet = worksheet["B3"]
+
     puts advice_from_sheet
 
     if valueAdvice == "long" || valueAdvice == "short"
