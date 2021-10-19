@@ -19,11 +19,13 @@ namespace :scheduled_tasks do
 
   task :supertrendmail => :environment do
     
-    crypto_pair = {"btc"=>"BTC/USDT"}
+    crypto_pair = {"btc"=>"BTC/USDT", "eth"=>"ETH/USDT"}
     crypto_arr = Array.new
     valueAdvice = ""
+    counter = 1
 
     crypto_pair.each do |crypto, pair|
+      puts counter
       url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
       resp_st = Net::HTTP.get_response(URI.parse(url_st))
       data_st = JSON.parse(resp_st.body)
@@ -37,33 +39,32 @@ namespace :scheduled_tasks do
         puts hash
       
       end
+
+      puts crypto_arr
+
+      session = GoogleDrive::Session.from_service_account_key("client_secrets.json")
+      spreadsheet = session.spreadsheet_by_title("Binance")
+      worksheet = spreadsheet.worksheets[counter]
+      advice_from_sheet = worksheet["B3"]
+
+      puts advice_from_sheet
+
+      if valueAdvice == "long" || valueAdvice == "short"
+        if advice_from_sheet != valueAdvice
+          puts "enviar correo"
+          ApplicationMailer.supertrend_analyse(crypto_arr).deliver
+        end
       
-    end
+        worksheet.insert_rows(3,
+        [
+          crypto_arr
+        ])
 
-    puts crypto_arr
-
-    session = GoogleDrive::Session.from_service_account_key("client_secrets.json")
-
-
-    spreadsheet = session.spreadsheet_by_title("Binance")
-    worksheet = spreadsheet.worksheets.last
-    advice_from_sheet = worksheet["B3"]
-
-    puts advice_from_sheet
-
-    if valueAdvice == "long" || valueAdvice == "short"
-      if advice_from_sheet != valueAdvice
-        puts "enviar correo"
-        ApplicationMailer.supertrend_analyse(crypto_arr).deliver
+        worksheet.save
       end
-      
-      worksheet.insert_rows(3,
-      [
-        crypto_arr
-      ])
-
-      worksheet.save
-    end
+      crypto_arr.clear
+      counter += 1
+    end   
   end
 
   task :mailbinance => :environment do
