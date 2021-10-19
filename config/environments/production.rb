@@ -80,7 +80,7 @@ Rails.application.configure do
       domain: 'gmail.com',
       user_name: ENV['SMTP_USER_NAME'],
       password: ENV['SMTP_PASSWORD'],
-      authentication: :plain,
+      authentication: :login,
       enable_starttls_auto: true,
       openssl_verify_mode: 'none'
   }
