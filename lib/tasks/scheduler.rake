@@ -52,7 +52,7 @@ namespace :scheduled_tasks do
       if valueAdvice == "long" || valueAdvice == "short"
         if advice_from_sheet != valueAdvice
           puts "enviar correo"
-          ApplicationMailer.supertrend_analyse(crypto_arr).deliver
+          ApplicationMailer.supertrend_analyse(crypto_arr,pair).deliver
         end
       
         worksheet.insert_rows(3,
