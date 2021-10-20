@@ -65,6 +65,7 @@ namespace :scheduled_tasks do
       end
       crypto_arr.clear
       counter += 1
+      sleep 15
     end   
   end
 
