@@ -19,7 +19,7 @@ namespace :scheduled_tasks do
 
   task :supertrendmail => :environment do
         #crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT", "sol" => "SOL/USDT"}
-    crypto_pair = {"btc"=>"BTC/USDT", "eth"=>"ETH/USDT", "ltc"=>"LTC/USDT", "xrp" => "XRP/USDT","xmr" => "XMR/USDT", "sol"=>"SOL/USDT", "axs" => "AXS/USDT", "bnb" => "BNB/USDT"}
+    crypto_pair = {"btc"=>"BTC/USDT", "eth"=>"ETH/USDT", "ltc"=>"LTC/USDT", "xrp" => "XRP/USDT","xmr" => "XMR/USDT", "sol"=>"SOL/USDT", "axs" => "AXS/USDT", "bnb" => "BNB/USDT", "mana" => "MANA/USDT", "avax" => "AVAX/USDT"}
     crypto_arr = Array.new
     valueAdvice = ""
     counter = 1
@@ -68,7 +68,7 @@ namespace :scheduled_tasks do
       end
       crypto_arr.clear
       counter += 1
-      sleep 15
+      sleep 20
     end   
   end
 
