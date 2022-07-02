@@ -15,9 +15,12 @@
 # every 4.days do
 #   runner "AnotherModel.prune_old_records"
 # end
-set :output, "log/cron.log"
 
-every 1.minute do
-	rake 'scheduled_tasks:mailme'
+set :output, "log/cron.log"
+set :environment, :development
+env :PATH, ENV['PATH']
+
+every 2.minute do
+	rake 'scheduled_tasks:rsi'
 end
 # Learn more: http://github.com/javan/whenever

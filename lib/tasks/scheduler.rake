@@ -27,21 +27,16 @@ namespace :scheduled_tasks do
     crypto_pair.each do |crypto, pair|
       puts pair
       if pair == "BTC/USDT"
-        url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=4h"
+        url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1d"
       else
-        url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
+        url_st= "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1d"
       end
       resp_st = Net::HTTP.get_response(URI.parse(url_st))
       data_st = JSON.parse(resp_st.body)
 
+      valueAdvice = data_st["valueAdvice"]
       data_st.each do |i,hash|
-        if i == "valueAdvice"
-          valueAdvice =  hash
-        end 
-
         crypto_arr << hash
-        puts hash
-      
       end
 
       puts crypto_arr
@@ -52,6 +47,7 @@ namespace :scheduled_tasks do
       advice_from_sheet = worksheet["B3"]
 
       puts advice_from_sheet
+      byebug
 
       if valueAdvice == "long" || valueAdvice == "short"
         if advice_from_sheet != valueAdvice
@@ -151,6 +147,28 @@ namespace :scheduled_tasks do
     end 
 
     worksheet.save
+  end
+
+  task :rsi => [ :environment ] do
+   # crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
+    crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "near" => "NEAR/USDT", "ltc" => "LTC/USDT", "mana" => "MANA/USDT", "xrp" => "XRP/USDT", "ada" => "ADA/USDT", "doge" => "DOGE/USDT", "dot" => "DOT/USDT"}
+    crypto_arr = Hash.new
+    crypto_pair.each do |crypto, pair|
+      url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=5m"
+      resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
+      data_rsi = JSON.parse(resp_rsi.body)
+      #puts pair
+      #puts data_rsi
+      if !data_rsi["value"].nil?
+        #puts data_rsi["value"]
+        if data_rsi["value"] < 25 || data_rsi["value"] > 75
+          crypto_arr.store(pair, data_rsi)
+          puts crypto_arr
+          ApplicationMailer.rsi_email(crypto_arr).deliver
+        end
+      end
+      sleep 20
+    end
   end
 
   task :mailme => :environment do

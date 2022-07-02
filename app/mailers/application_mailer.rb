@@ -3,14 +3,21 @@ class ApplicationMailer < ActionMailer::Base
   default from: 'from@example.com'
   layout 'mailer'
 
-	def test_email(arr, price)
+	def test_email()
     	to = "julio.ahuactzin@gmail.com"
-    	@arr_crypto = arr
-    	@price = price
     	mail(:to => to, :subject => "Señal COMPRA/VENTA", :from => "CRYPTO BOT") do |format|
     		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
 		end			
     end
+
+    def rsi_email(arr)
+        @arr_crypto = arr
+    	to = "julio.ahuactzin@gmail.com"
+    	mail(:to => to, :subject => "Señal Sobreventa RSI", :from => "CRYPTO BOT") do |format|
+    		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
+		end			
+    end
+
 
 
     def volume_analyse(volume_from_sheet, arr, volume)
