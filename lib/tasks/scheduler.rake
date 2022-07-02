@@ -47,7 +47,7 @@ namespace :scheduled_tasks do
       advice_from_sheet = worksheet["B3"]
 
       puts advice_from_sheet
-      byebug
+      #byebug
 
       if valueAdvice == "long" || valueAdvice == "short"
         if advice_from_sheet != valueAdvice
