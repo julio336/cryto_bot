@@ -10,7 +10,7 @@ class ApplicationMailer < ActionMailer::Base
 		end			
     end
 
-    def rsi_email(arr)
+    def rsi_sobreventa_email(arr)
         @arr_crypto = arr
     	to = "julio.ahuactzin@gmail.com"
     	mail(:to => to, :subject => "Señal Sobreventa RSI", :from => "CRYPTO BOT") do |format|
@@ -18,6 +18,13 @@ class ApplicationMailer < ActionMailer::Base
 		end			
     end
 
+    def rsi_sobrecompra_email(arr)
+        @arr_crypto = arr
+    	to = "julio.ahuactzin@gmail.com"
+    	mail(:to => to, :subject => "Señal Sobrecompra RSI", :from => "CRYPTO BOT") do |format|
+    		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
+		end			
+    end
 
 
     def volume_analyse(volume_from_sheet, arr, volume)
