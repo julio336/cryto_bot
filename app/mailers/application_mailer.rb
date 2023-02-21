@@ -18,6 +18,15 @@ class ApplicationMailer < ActionMailer::Base
 		end			
     end
 
+
+    def macd(value)
+        @value = value
+    	to = "julio.ahuactzin@gmail.com"
+    	mail(:to => to, :subject => "MACD Histogram Signal", :from => "CRYPTO BOT") do |format|
+    		format.text(:content_type => "text/plain", :charset => "UTF-8", :content_transfer_encoding => "7bit")
+		end			
+    end
+
     def rsi_sobrecompra_email(arr)
         @arr_crypto = arr
     	to = "julio.ahuactzin@gmail.com"

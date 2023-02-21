@@ -20,7 +20,7 @@ set :output, "log/cron.log"
 set :environment, :development
 env :PATH, ENV['PATH']
 
-every 2.minute do
+every 3.minute do
 	rake 'scheduled_tasks:rsi'
 end
 # Learn more: http://github.com/javan/whenever

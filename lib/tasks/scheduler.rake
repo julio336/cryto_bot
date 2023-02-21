@@ -68,6 +68,42 @@ namespace :scheduled_tasks do
     end   
   end
 
+  task :macd => :environment do
+    #crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
+    crypto_pair = {"eth"=>"ETH/USDT"}
+    crypto_arr = Array.new
+    crypto_pair.each do |crypto, pair|
+      url_macd = "https://api.taapi.io/macd?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=30m"
+      resp_macd = Net::HTTP.get_response(URI.parse(url_macd))
+      data_macd = JSON.parse(resp_macd.body)
+      value = data_macd["valueMACDHist"] > 0 ? "POSITIVE" : "NEGATIVE"; 
+     
+
+     
+
+      session = GoogleDrive::Session.from_service_account_key("client_secrets.json")
+      spreadsheet = session.spreadsheet_by_title("Binance")
+      worksheet = spreadsheet.worksheets.first
+      advice_from_sheet = worksheet["A2"]
+      crypto_arr << value
+      puts value
+      puts advice_from_sheet
+
+      if advice_from_sheet != value
+        ApplicationMailer.macd(value).deliver
+      end
+
+      worksheet.insert_rows(2,
+        [
+          crypto_arr
+        ])
+
+      
+      worksheet.save
+    end
+   
+  end
+
   task :mailbinance => :environment do
     
     crypto_pair = {"btc"=>"BTC/USDT"}
@@ -151,14 +187,14 @@ namespace :scheduled_tasks do
 
   task :rsi => [ :environment ] do
    # crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
-    crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "near" => "NEAR/USDT", "ltc" => "LTC/USDT", "mana" => "MANA/USDT", "xrp" => "XRP/USDT", "ada" => "ADA/USDT", "doge" => "DOGE/USDT", "dot" => "DOT/USDT"}
+    crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "matic" => "MATIC/USDT", "ltc" => "LTC/USDT", "mana" => "MANA/USDT", "xrp" => "XRP/USDT", "ada" => "ADA/USDT", "doge" => "DOGE/USDT", "bnb" => "BNB/USDT"}
     crypto_arr = Hash.new
     crypto_pair.each do |crypto, pair|
       url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=5m"
       resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
       data_rsi = JSON.parse(resp_rsi.body)
-      #puts pair
-      #puts data_rsi
+      puts pair
+      puts data_rsi
       if !data_rsi["value"].nil?
         #puts data_rsi["value"]
         if data_rsi["value"] < 25
@@ -175,35 +211,6 @@ namespace :scheduled_tasks do
     end
   end
 
-  task :mailme => :environment do
-    #crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
-    crypto_pair = {"btc"=>"BTC/USDT"}
-    crypto_arr = Hash.new
-    #price_arr = Hash.new
-    crypto_pair.each do |crypto, pair|
-    #url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
-    #resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
-    #data_rsi = JSON.parse(resp_rsi.body)
-      #url_st = "https://api.taapi.io/supertrend?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
-      url_candle = "https://api.taapi.io/candle?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=15m"
-      #price = "https://api.taapi.io/typprice?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=1h"
-      resp_candle = Net::HTTP.get_response(URI.parse(url_candle))
-      data_candle = JSON.parse(resp_candle.body)
-      puts data_candle
-      #evaluation = (data_price['value']/data_st['value'])
-      #puts evaluation
-      #porcent = ((1-evaluation).abs)*100
-      #puts porcent
-      #if porcent < 2
-      crypto_arr.store(pair, data_candle)
-        #price_arr.store(pair, data_price)
-      #end
-    end
-    #puts crypto_arr
-    #if !crypto_arr.empty?
-     # puts "Email enviado"
-      #ApplicationMailer.test_email(crypto_arr, price_arr).deliver
-    #end
-  end
+  
 end
 
