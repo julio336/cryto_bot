@@ -187,27 +187,32 @@ namespace :scheduled_tasks do
 
   task :rsi => [ :environment ] do
    # crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "xrp" => "XRP/USDT", "ltc" => "LTC/USDT", "xmr" => "XMR/USDT"}
-    crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "matic" => "MATIC/USDT", "ltc" => "LTC/USDT", "mana" => "MANA/USDT", "xrp" => "XRP/USDT", "ada" => "ADA/USDT", "doge" => "DOGE/USDT", "bnb" => "BNB/USDT"}
+    #crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "ltc" => "LTC/USDT", "mana" => "MANA/USDT", "xrp" => "XRP/USDT", "ada" => "ADA/USDT", "doge" => "DOGE/USDT"}
+    crypto_pair = {"btc"=>"BTC/USDT", "eth" => "ETH/USDT", "sol" => "SOL/USDT", "avax" => "AVAX/USDT", "ltc" => "LTC/USDT", "xrp" => "XRP/USDT", "doge" => "DOGE/USDT"}
     crypto_arr = Hash.new
     crypto_pair.each do |crypto, pair|
-      url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=5m"
+      url_rsi = "https://api.taapi.io/rsi?secret=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1bGlvMzM2QGhvdG1haWwuY29tIiwiaWF0IjoxNjEzMDA4ODgyLCJleHAiOjc5MjAyMDg4ODJ9.Kuut9k7NMH-TPQQmV6YdjgmYyH7wlGR4ZQmB8x1WhTA&exchange=binance&symbol=#{pair}&interval=30m"
       resp_rsi = Net::HTTP.get_response(URI.parse(url_rsi))
       data_rsi = JSON.parse(resp_rsi.body)
       puts pair
       puts data_rsi
       if !data_rsi["value"].nil?
         #puts data_rsi["value"]
-        if data_rsi["value"] < 25
+        if data_rsi["value"] < 26
           crypto_arr.store(pair, data_rsi)
           puts crypto_arr
-          ApplicationMailer.rsi_sobreventa_email(crypto_arr).deliver
-        elsif data_rsi["value"] > 75
+         # ApplicationMailer.rsi_sobreventa_email(crypto_arr).deliver
+        elsif data_rsi["value"] > 73
           crypto_arr.store(pair, data_rsi)
           puts crypto_arr
-          ApplicationMailer.rsi_sobrecompra_email(crypto_arr).deliver
+          #ApplicationMailer.rsi_sobrecompra_email(crypto_arr).deliver
         end
       end
-      sleep 20
+      sleep 10
+    end
+    puts crypto_arr
+    if !crypto_arr.empty?
+      ApplicationMailer.rsi_email(crypto_arr).deliver
     end
   end
 
